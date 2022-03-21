@@ -1,0 +1,144 @@
+{
+    "_version": "1.17.0",
+    "sap.app": {
+        "id": "oup.otc.customercreditreport",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "tags": {
+            "keywords": []
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/sap/opu/odata/sap/ZOTC_SB_UI_CUST_OVP_O2/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [
+                        "annotation"
+                    ],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "2.0"
+                }
+            },
+            "annotation": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation.xml",
+                "settings": {
+                    "localUri": "annotations/annotation.xml"
+                }
+            }
+        },
+        "offline": false,
+        "sourceTemplate": {
+            "id": "OVP.smartovptemplate",
+            "version": "1.41.1"
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        },
+        "supportedThemes": [
+            "sap_hcb",
+            "sap_belize"
+        ]
+    },
+    "sap.ui5": {
+        "resources": {
+            "js": [],
+            "css": []
+        },
+        "dependencies": {
+            "minUI5Version": "1.71.13",
+            "libs": {
+				"sap.ovp": {}
+            },
+            "components": {}
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties",
+                "preload": false
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            },
+            "mainService": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "defaultCountMode": "Inline"
+                }
+            }
+        },
+        "extends": {
+            "extensions": {}
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "analytical"
+    },
+    "sap.ovp": {
+        "globalFilterModel": "mainService",
+        "globalFilterEntityType": "ZOTC_C_CUSTOVPType",
+        "globalFilterEntitySet": "ZOTC_C_CUSTOVP",
+        "containerLayout": "resizable",
+        "enableLiveFilter": false,
+        "considerAnalyticalParameters": false,
+        "cards": {
+            "idCustomerInformation": {
+                "model": "mainService",
+                "template": "oup.otc.customercreditreport.ext.customer_information",
+                "settings": {
+					"entitySet": "ZOTC_C_CUSTOVP"
+                }
+            },
+            "idCreditInformation": {
+                "model": "mainService",
+                "template": "oup.otc.customercreditreport.ext.credit_information",
+                "settings": {
+					"entitySet": "ZOTC_C_CUSTOVP"
+                }
+            },
+            "idOverdueBalance": {
+                "model": "mainService",
+                "template": "oup.otc.customercreditreport.ext.overdue_balance",
+                "settings": {
+					"entitySet": "ZOTC_C_CUSTOVP"
+                }
+            },
+            "idQuickLink": {
+                "model": "mainService",
+                "template": "oup.otc.customercreditreport.ext.quick_link",
+                "settings": {
+					"entitySet": "ZOTC_C_CUSTOVP"
+                }
+            }
+        }
+    },
+    "sap.ui.generic.app": {
+        "settings": {}
+    }
+}

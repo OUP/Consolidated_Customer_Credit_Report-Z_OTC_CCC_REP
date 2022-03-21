@@ -1,0 +1,29 @@
+<core:FragmentDefinition 
+    xmlns="sap.m" 
+    xmlns:core="sap.ui.core" 
+    xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1">
+    <!-- Card's Content area code goes here -->
+
+    <VBox
+        class="sapUiResponsiveMargin">
+        <!-- customer -->
+        <Label text="{@i18n>CINF_CUSTOMER}:"/>
+        <Text text="{global>/CompanyCode}" class="sapUiSmallMarginBottom"/>
+        <!-- displayed in -->
+        <Label text="{@i18n>CINF_DISPLAYED_IN}:"/>
+        <Text text="{global>/DisplayedIn}" class="sapUiSmallMarginBottom"/>
+        <!-- name -->
+        <Label text="{@i18n>CINF_NAME}:"/>
+        <Text text="{global>/Name1}" class="sapUiSmallMarginBottom"/>
+        <!-- address -->
+        <Label text="{@i18n>CINF_ADDRESS}:"/>
+        <Text text="{global>/Name2}" class="sapUiSmallMarginBottom"/>
+        <!-- city -->
+        <Label text="{@i18n>CINF_CITY}:"/>
+        <Text text="{global>/CityName}" class="sapUiSmallMarginBottom"/>
+        <!-- postal code -->
+        <Label text="{@i18n>CINF_POSTAL_CODE}:"/>
+        <Text text="{global>/PostalCode}" class="sapUiSmallMarginBottom"/>
+    </VBox>
+
+</core:FragmentDefinition>

@@ -1,0 +1,41 @@
+<core:FragmentDefinition 
+    xmlns="sap.m" 
+    xmlns:core="sap.ui.core" 
+    xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1">
+    <!-- Card's Content area code goes here -->
+
+    <VBox
+        class="sapUiResponsiveMargin">
+        <!-- Stop -->
+        <Label text="{@i18n>CI_STOP}:"/>
+        <Text text="{global>/creditInfo/Stop}" class="sapUiSmallMarginBottom"/>
+        <!-- Date Stop -->
+        <Label text="{@i18n>CI_DATE_STOP}:"/>
+        <Text text="{path:'global>/creditInfo/StopDate',type:'sap.ui.model.type.Date',formatOptions:{style:'medium'}}" class="sapUiSmallMarginBottom"/>
+        <!-- Reason -->
+        <Label text="{@i18n>CI_REASON}:"/>
+        <Text text="{global>/creditInfo/Reason}" class="sapUiSmallMarginBottom"/>
+        <!-- Limit -->
+        <Label text="{@i18n>CI_LIMIT}:"/>
+        <Text text="{global>/creditInfo/CreditLimit}" class="sapUiSmallMarginBottom"/>
+        <!-- Last cash -->
+        <Label text="{@i18n>CI_LAST_CASH}:"/>
+        <Text text="{global>/creditInfo/LastCash}" class="sapUiSmallMarginBottom"/>
+        <!-- Last cash Date -->
+        <Label text="{@i18n>CI_LAST_CASH_DATE}:"/>
+        <Text text="{path:'global>/creditInfo/LastCashDate',type:'sap.ui.model.type.Date',formatOptions:{style:'medium'}}" class="sapUiSmallMarginBottom"/>
+        <!-- Last sale -->
+        <Label text="{@i18n>CI_LAST_SALE}:"/>
+        <Text text="{global>/creditInfo/LastSale}" class="sapUiSmallMarginBottom"/>
+        <!-- Date Last sale -->
+        <Label text="{@i18n>CI_DATE_LAST_SALE}:"/>
+        <Text text="{path:'global>/creditInfo/LastDate',type:'sap.ui.model.type.Date',formatOptions:{style:'medium'}}" class="sapUiSmallMarginBottom"/>
+        <!-- Last act'y -->
+        <Label text="{@i18n>CI_LAST_ACT}:"/>
+        <Text text="{global>/creditInfo/LastActivity}" class="sapUiSmallMarginBottom"/>
+        <!-- Date Last act'y -->
+        <Label text="{@i18n>CI_DATE_LAST_ACT}:"/>
+        <Text text="{path:'global>/creditInfo/LastActiviyDate',type:'sap.ui.model.type.Date',formatOptions:{style:'medium'}}" class="sapUiSmallMarginBottom"/>
+    </VBox>
+
+</core:FragmentDefinition>

@@ -1,0 +1,24 @@
+<core:FragmentDefinition 
+    xmlns="sap.m" 
+    xmlns:core="sap.ui.core" 
+    xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+    <!-- Card's Content area code goes here -->
+
+    <VBox
+        class="sapUiResponsiveMargin">
+        <!-- Customer Details -->
+        <Link text="{@i18n>QL_CUST_DTL}" press=".onLinkPress" app:ACTION="CUST_DTL" class="sapUiSmallMarginBottom"/>
+        <!-- Credit Index -->
+        <Link text="{@i18n>QL_CRED_IND}" press=".onLinkPress" app:ACTION="CRED_IND" class="sapUiSmallMarginBottom"/>
+        <!-- Payment History -->
+        <Link text="{@i18n>QL_PAYM_HIS}" press=".onLinkPress" app:ACTION="PAYM_HIS" class="sapUiSmallMarginBottom"/>
+        <!-- Stop History -->
+        <Link text="{@i18n>QL_STOP_HIS}" press=".onLinkPress" app:ACTION="STOP_HIS" class="sapUiSmallMarginBottom"/>
+        <!-- Display comments -->
+        <Link text="{@i18n>QL_DISP_COM}" press=".onLinkPress" app:ACTION="DISP_COM" class="sapUiSmallMarginBottom"/>
+        <!-- Credit Management -->
+        <Link text="{@i18n>QL_CRED_MAN}" press=".onLinkPress" app:ACTION="CRED_MAN" class="sapUiSmallMarginBottom"/>
+    </VBox>
+
+</core:FragmentDefinition>
