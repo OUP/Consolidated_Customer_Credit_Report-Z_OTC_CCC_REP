@@ -17,11 +17,12 @@
                 "uri": "/sap/opu/odata/sap/ZOTC_SB_UI_CUST_OVP_O2/",
                 "type": "OData",
                 "settings": {
+                    "odataVersion": "2.0",
                     "annotations": [
-                        "annotation"
+                        "annotation",
+                        "mainService_Annotation"
                     ],
-                    "localUri": "localService/metadata.xml",
-                    "odataVersion": "2.0"
+                    "localUri": "localService/metadata.xml"
                 }
             },
             "annotation": {
@@ -29,6 +30,13 @@
                 "uri": "annotations/annotation.xml",
                 "settings": {
                     "localUri": "annotations/annotation.xml"
+                }
+            },
+            "mainService_Annotation": {
+                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZOTC_SB_UI_CUST_OVP_O2_VAN',Version='0001')/$value/",
+                "type": "ODataAnnotation",
+                "settings": {
+                    "localUri": "localService/mainService_Annotation.xml"
                 }
             }
         },
@@ -66,7 +74,7 @@
         "dependencies": {
             "minUI5Version": "1.71.13",
             "libs": {
-				"sap.ovp": {}
+                "sap.ovp": {}
             },
             "components": {}
         },
@@ -112,33 +120,45 @@
                 "model": "mainService",
                 "template": "oup.otc.customercreditreport.ext.customer_information",
                 "settings": {
-					"entitySet": "ZOTC_C_CUSTOVP"
+                    "entitySet": "ZOTC_C_CUSTOVP"
                 }
             },
             "idCreditInformation": {
                 "model": "mainService",
                 "template": "oup.otc.customercreditreport.ext.credit_information",
                 "settings": {
-					"entitySet": "ZOTC_C_CUSTOVP"
+                    "entitySet": "ZOTC_C_CUSTOVP"
+                }
+            },
+            "idQuick_Link": {
+                "model": "mainService",
+                "template": "oup.otc.customercreditreport.ext.quick_link",
+                "settings": {
+                    "entitySet": "ZOTC_C_CUSTOVP"
                 }
             },
             "idOverdueBalance": {
                 "model": "mainService",
-                "template": "oup.otc.customercreditreport.ext.overdue_balance",
+                "template": "sap.ovp.cards.table",
                 "settings": {
-					"entitySet": "ZOTC_C_CUSTOVP"
+                    "title": "Customer Overdue & Dispute Amt",
+                    "entitySet": "ZOTC_C_CUSTOVRDUEBALFINAL",
+                    "sortOrder": "ascending",
+                    "sortBy": "Sequence",
+                    "annotationPath": "com.sap.vocabularies.UI.v1.LineItem#BalanceInfo"
                 }
             },
-            "idQuickLink": {
+            "idCustomerBalance": {
                 "model": "mainService",
-                "template": "oup.otc.customercreditreport.ext.quick_link",
+                "template": "sap.ovp.cards.table",
                 "settings": {
-					"entitySet": "ZOTC_C_CUSTOVP"
+                    "title": "Aged & Turnover Balance",
+                    "entitySet": "ZOTC_C_CUSTMONTHBAL",
+                    "sortOrder": "descending",
+                    "sortBy": "PostingYearMonth",
+                    "annotationPath": "com.sap.vocabularies.UI.v1.LineItem#MonthBal"
                 }
             }
         }
-    },
-    "sap.ui.generic.app": {
-        "settings": {}
     }
 }

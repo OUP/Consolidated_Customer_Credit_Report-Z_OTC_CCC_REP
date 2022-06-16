@@ -7,14 +7,17 @@
     <VBox
         class="sapUiResponsiveMargin">
         <!-- customer -->
-        <Label text="{@i18n>CINF_CUSTOMER}:"/>
+        <Label text="{@i18n>CINF_COMPANY_CODE}:"/>
         <Text text="{global>/CompanyCode}" class="sapUiSmallMarginBottom"/>
         <!-- displayed in -->
         <Label text="{@i18n>CINF_DISPLAYED_IN}:"/>
         <Text text="{global>/DisplayedIn}" class="sapUiSmallMarginBottom"/>
+        <!-- Customer Currency -->
+        <Label text="{@i18n>CINF_CUSTOMER_CURR}:"/>
+        <Text text="{global>/CustomerCurrency}" class="sapUiSmallMarginBottom"/>
         <!-- name -->
         <Label text="{@i18n>CINF_NAME}:"/>
-        <Text text="{global>/Name1}" class="sapUiSmallMarginBottom"/>
+        <Text text="{global>/Customer} ({global>/Name1})" class="sapUiSmallMarginBottom"/>
         <!-- address -->
         <Label text="{@i18n>CINF_ADDRESS}:"/>
         <Text text="{global>/Name2}" class="sapUiSmallMarginBottom"/>

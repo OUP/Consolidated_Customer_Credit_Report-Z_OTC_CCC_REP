@@ -14,25 +14,28 @@
         <Text text="{path:'global>/creditInfo/StopDate',type:'sap.ui.model.type.Date',formatOptions:{style:'medium'}}" class="sapUiSmallMarginBottom"/>
         <!-- Reason -->
         <Label text="{@i18n>CI_REASON}:"/>
-        <Text text="{global>/creditInfo/Reason}" class="sapUiSmallMarginBottom"/>
+        <Text text="{global>/creditInfo/ReasonText}" class="sapUiSmallMarginBottom"/>
+        <!-- Terms -->
+        <Label text="{@i18n>CI_TERMS}:"/>
+        <Text text="{global>/creditInfo/Terms}" class="sapUiSmallMarginBottom"/>
         <!-- Limit -->
         <Label text="{@i18n>CI_LIMIT}:"/>
-        <Text text="{global>/creditInfo/CreditLimit}" class="sapUiSmallMarginBottom"/>
+        <Text text="{global>/creditInfo/CreditLimit} {global>/creditInfo/CreditSegmentCurrency}" class="sapUiSmallMarginBottom"/>
         <!-- Last cash -->
         <Label text="{@i18n>CI_LAST_CASH}:"/>
-        <Text text="{global>/creditInfo/LastCash}" class="sapUiSmallMarginBottom"/>
+        <Text text="{global>/creditInfo/LastCash} {global>/creditInfo/LastCashCurr}" class="sapUiSmallMarginBottom"/>
         <!-- Last cash Date -->
         <Label text="{@i18n>CI_LAST_CASH_DATE}:"/>
         <Text text="{path:'global>/creditInfo/LastCashDate',type:'sap.ui.model.type.Date',formatOptions:{style:'medium'}}" class="sapUiSmallMarginBottom"/>
         <!-- Last sale -->
         <Label text="{@i18n>CI_LAST_SALE}:"/>
-        <Text text="{global>/creditInfo/LastSale}" class="sapUiSmallMarginBottom"/>
+        <Text text="{global>/creditInfo/LastSale} {global>/creditInfo/Currency}" class="sapUiSmallMarginBottom"/>
         <!-- Date Last sale -->
         <Label text="{@i18n>CI_DATE_LAST_SALE}:"/>
         <Text text="{path:'global>/creditInfo/LastDate',type:'sap.ui.model.type.Date',formatOptions:{style:'medium'}}" class="sapUiSmallMarginBottom"/>
         <!-- Last act'y -->
         <Label text="{@i18n>CI_LAST_ACT}:"/>
-        <Text text="{global>/creditInfo/LastActivity}" class="sapUiSmallMarginBottom"/>
+        <Text text="{global>/creditInfo/LastActivity} {global>/creditInfo/Currency}" class="sapUiSmallMarginBottom"/>
         <!-- Date Last act'y -->
         <Label text="{@i18n>CI_DATE_LAST_ACT}:"/>
         <Text text="{path:'global>/creditInfo/LastActiviyDate',type:'sap.ui.model.type.Date',formatOptions:{style:'medium'}}" class="sapUiSmallMarginBottom"/>

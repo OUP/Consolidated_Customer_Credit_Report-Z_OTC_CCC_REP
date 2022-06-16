@@ -24,12 +24,15 @@
                 <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="CompanyCodeName" sap:label="Company Code"/>
                 <Property Name="CompanyCodeName" Type="Edm.String" MaxLength="25" sap:label="Company Name" sap:quickinfo="Name of Company Code or Company"/>
             </EntityType>
-            <EntityType Name="I_CreditControlAreaStdVHType" sap:label="Credit Control Area" sap:value-list="true" sap:content-version="1">
+            <EntityType Name="I_CreditManagementSegmentType" sap:label="Credit Management Segment" sap:value-list="true" sap:content-version="1">
                 <Key>
-                    <PropertyRef Name="CreditControlArea"/>
+                    <PropertyRef Name="CreditSegment"/>
                 </Key>
-                <Property Name="CreditControlArea" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="CreditControlArea_Text" sap:label="Credit Control Area"/>
-                <Property Name="CreditControlArea_Text" Type="Edm.String" MaxLength="35" sap:label="Description" sap:quickinfo="Description of the credit control area" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="CreditSegment" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:text="CreditSegment_Text" sap:label="Credit Segment"/>
+                <Property Name="CreditSegment_Text" Type="Edm.String" MaxLength="50" sap:label="Name" sap:quickinfo="Name of Credit Segment" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="CreditSegmentCurrency" Type="Edm.String" MaxLength="5" sap:label="Currency" sap:quickinfo="Credit Segment Currency" sap:semantics="currency-code"/>
+                <Property Name="CrdtSgmtIsMainCreditSegment" Type="Edm.Boolean" sap:display-format="UpperCase" sap:label="Main Credit Segmt" sap:quickinfo="Indicator for Main Credit Segment"/>
+                <Property Name="CrdtSgmtIsAddedToMainSgmt" Type="Edm.Boolean" sap:display-format="UpperCase" sap:label="Add. Main Cr. Segmt" sap:quickinfo="Additive Contribution to Main Credit Segment"/>
             </EntityType>
             <EntityType Name="I_Customer_VHType" sap:label="Value Help for Customer" sap:value-list="true" sap:content-version="1">
                 <Key>
@@ -48,168 +51,106 @@
             </EntityType>
             <EntityType Name="ZOTC_C_CUSTCREDITINFOType" sap:label="Customer Credit Information CDS View" sap:content-version="1">
                 <Key>
-                    <PropertyRef Name="P_CompanyCode"/>
-                    <PropertyRef Name="P_CustomerCode"/>
                     <PropertyRef Name="CompanyCode"/>
                     <PropertyRef Name="Customer"/>
-                    <PropertyRef Name="CreditControlArea"/>
+                    <PropertyRef Name="CreditSegment"/>
                 </Key>
-                <Property Name="P_CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code"/>
-                <Property Name="P_CustomerCode" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Customer"/>
                 <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code" sap:value-list="standard"/>
                 <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Customer" sap:quickinfo="Customer Number" sap:value-list="standard"/>
-                <Property Name="CreditControlArea" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Credit control area" sap:value-list="standard"/>
-                <Property Name="CreditSegment" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Credit Segment"/>
+                <Property Name="CreditSegment" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Credit Segment" sap:value-list="standard"/>
                 <Property Name="Stop" Type="Edm.Boolean" sap:display-format="UpperCase" sap:label="Block in Cr. Mgt" sap:quickinfo="Blocked by Credit Management"/>
                 <Property Name="StopDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Resubmission On" sap:quickinfo="Resubmission Date"/>
                 <Property Name="Reason" Type="Edm.String" MaxLength="40" sap:label="Name" sap:quickinfo="SAP Credit Management: Description for Blocks"/>
+                <Property Name="Terms" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Payment terms" sap:quickinfo="Terms of payment key"/>
+                <Property Name="CreditLimit" Type="Edm.Decimal" Precision="16" Scale="3" sap:unit="CreditSegmentCurrency" sap:label="Calculated Limit" sap:quickinfo="Calculated Credit Limit"/>
                 <Property Name="LastCashDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Payment On" sap:quickinfo="Date of Last Payment"/>
-                <Property Name="LastCash" Type="Edm.Decimal" Precision="16" Scale="3" sap:label="Amount"/>
-                <Property Name="LastSale" Type="Edm.Decimal" Precision="24" Scale="3"/>
+                <Property Name="LastCash" Type="Edm.Decimal" Precision="16" Scale="3" sap:unit="LastCashCurr" sap:label="Amount"/>
+                <Property Name="LastCashCurr" Type="Edm.String" MaxLength="5" sap:label="Currency" sap:quickinfo="Currency Key" sap:semantics="currency-code"/>
+                <Property Name="LastSale" Type="Edm.Decimal" Precision="24" Scale="3" sap:unit="Currency"/>
                 <Property Name="LastDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date"/>
-                <Property Name="LastActivity" Type="Edm.Decimal" Precision="24" Scale="3"/>
+                <Property Name="LastActivity" Type="Edm.Decimal" Precision="24" Scale="3" sap:unit="Currency"/>
                 <Property Name="LastActiviyDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date"/>
-                <NavigationProperty Name="Parameters" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_56E748F8C31D7AC3145CC73E9581BEFE" FromRole="ToRole_assoc_56E748F8C31D7AC3145CC73E9581BEFE" ToRole="FromRole_assoc_56E748F8C31D7AC3145CC73E9581BEFE" sap:filterable="false"/>
+                <Property Name="CreditSegmentCurrency" Type="Edm.String" MaxLength="5" sap:label="Currency" sap:quickinfo="Credit Segment Currency" sap:semantics="currency-code"/>
+                <Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency" sap:quickinfo="Currency Key" sap:semantics="currency-code"/>
             </EntityType>
-            <EntityType Name="ZOTC_C_CUSTCREDITINFOParameters" sap:semantics="parameters" sap:content-version="1">
+            <EntityType Name="ZOTC_C_CUSTMONTHBALType" sap:label="Cust Monthly Aged Balance" sap:content-version="1">
                 <Key>
-                    <PropertyRef Name="P_CompanyCode"/>
-                    <PropertyRef Name="P_CustomerCode"/>
-                </Key>
-                <Property Name="P_CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:parameter="mandatory" sap:label="Company Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="P_CustomerCode" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:parameter="mandatory" sap:label="Customer" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <NavigationProperty Name="Set" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_56E748F8C31D7AC3145CC73E9581BEFE" FromRole="FromRole_assoc_56E748F8C31D7AC3145CC73E9581BEFE" ToRole="ToRole_assoc_56E748F8C31D7AC3145CC73E9581BEFE"/>
-            </EntityType>
-            <EntityType Name="ZOTC_C_CUSTMONTHBALType" sap:label="Cust Monthly Aged - Overdue Same Line" sap:content-version="1">
-                <Key>
-                    <PropertyRef Name="P_CompanyCode"/>
-                    <PropertyRef Name="P_CustomerCode"/>
-                    <PropertyRef Name="P_ExecutionDate"/>
                     <PropertyRef Name="CompanyCode"/>
                     <PropertyRef Name="Customer"/>
+                    <PropertyRef Name="CalendarMonthShortName"/>
                 </Key>
-                <Property Name="P_CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code"/>
-                <Property Name="P_CustomerCode" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Customer"/>
-                <Property Name="P_ExecutionDate" Type="Edm.DateTime" Nullable="false" Precision="0" sap:display-format="Date" sap:label="Current Date"/>
                 <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code" sap:value-list="standard"/>
-                <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Customer"/>
-                <Property Name="CalendarMonthShortName" Type="Edm.String" MaxLength="5"/>
+                <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Customer" sap:value-list="standard"/>
+                <Property Name="CalendarMonthShortName" Type="Edm.String" Nullable="false" MaxLength="5"/>
                 <Property Name="PostingYearMonth" Type="Edm.String" MaxLength="6" sap:display-format="NonNegative"/>
-                <Property Name="Aged_Balance" Type="Edm.Decimal" Precision="24" Scale="3"/>
-                <Property Name="Turnover_Balance" Type="Edm.Decimal" Precision="24" Scale="3"/>
-                <NavigationProperty Name="Parameters" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_3C09B0EE4F9DEC8C375721E317AABDCA" FromRole="ToRole_assoc_3C09B0EE4F9DEC8C375721E317AABDCA" ToRole="FromRole_assoc_3C09B0EE4F9DEC8C375721E317AABDCA" sap:filterable="false"/>
-            </EntityType>
-            <EntityType Name="ZOTC_C_CUSTMONTHBALParameters" sap:semantics="parameters" sap:content-version="1">
-                <Key>
-                    <PropertyRef Name="P_CompanyCode"/>
-                    <PropertyRef Name="P_CustomerCode"/>
-                    <PropertyRef Name="P_ExecutionDate"/>
-                </Key>
-                <Property Name="P_CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:parameter="mandatory" sap:label="Company Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="P_CustomerCode" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:parameter="mandatory" sap:label="Customer" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="P_ExecutionDate" Type="Edm.DateTime" Nullable="false" Precision="0" sap:display-format="Date" sap:parameter="mandatory" sap:label="Current Date" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <NavigationProperty Name="Set" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_3C09B0EE4F9DEC8C375721E317AABDCA" FromRole="FromRole_assoc_3C09B0EE4F9DEC8C375721E317AABDCA" ToRole="ToRole_assoc_3C09B0EE4F9DEC8C375721E317AABDCA"/>
+                <Property Name="IdentifierAged" Type="Edm.String" DefaultValue="AGED" MaxLength="10" sap:display-format="UpperCase" sap:label="Character Field with Length 10" sap:heading="" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="IdentifierTurnOver" Type="Edm.String" DefaultValue="TURNOVER" MaxLength="10" sap:display-format="UpperCase" sap:label="Character Field with Length 10" sap:heading="" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Aged_Balance" Type="Edm.Decimal" Precision="24" Scale="3" sap:unit="Currency"/>
+                <Property Name="Turnover_Balance" Type="Edm.Decimal" Precision="24" Scale="3" sap:unit="Currency"/>
+                <Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Company Code Crcy" sap:quickinfo="Company Code Currency" sap:semantics="currency-code"/>
             </EntityType>
             <EntityType Name="ZOTC_C_CUSTOVPType" sap:label="Customer OVP" sap:content-version="1">
                 <Key>
-                    <PropertyRef Name="P_CompanyCode"/>
-                    <PropertyRef Name="P_CustomerCode"/>
                     <PropertyRef Name="CompanyCode"/>
                     <PropertyRef Name="Customer"/>
                 </Key>
-                <Property Name="P_CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code"/>
-                <Property Name="P_CustomerCode" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Customer"/>
-                <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code" sap:value-list="standard"/>
-                <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Customer" sap:quickinfo="Customer Number" sap:value-list="standard"/>
+                <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:filter-restriction="single-value" sap:required-in-filter="true" sap:label="Company Code" sap:value-list="standard"/>
+                <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:filter-restriction="single-value" sap:required-in-filter="true" sap:text="Name1" sap:label="Customer" sap:quickinfo="Customer Number" sap:value-list="standard"/>
                 <Property Name="DisplayedIn" Type="Edm.String" MaxLength="5" sap:label="Display Currency" sap:quickinfo="Currency Key" sap:semantics="currency-code"/>
                 <Property Name="CustomerCurrency" Type="Edm.String" MaxLength="5" sap:label="Currency" sap:semantics="currency-code"/>
                 <Property Name="Name1" Type="Edm.String" MaxLength="35" sap:label="Name" sap:quickinfo="Name 1"/>
                 <Property Name="Name2" Type="Edm.String" MaxLength="35" sap:label="Name 2"/>
                 <Property Name="CityName" Type="Edm.String" MaxLength="35" sap:label="City"/>
                 <Property Name="PostalCode" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Postal Code"/>
-                <NavigationProperty Name="to_C_CUSTCREDITINFO" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_776F2C598107F76CAE32DFB2D9B6A39D" FromRole="FromRole_assoc_776F2C598107F76CAE32DFB2D9B6A39D" ToRole="ToRole_assoc_776F2C598107F76CAE32DFB2D9B6A39D"/>
-                <NavigationProperty Name="to_C_CUSTMONTHBAL" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_3E08EAF19A7D0C0B5A6038CCB402E984" FromRole="FromRole_assoc_3E08EAF19A7D0C0B5A6038CCB402E984" ToRole="ToRole_assoc_3E08EAF19A7D0C0B5A6038CCB402E984"/>
-                <NavigationProperty Name="to_C_CUSTOVRDUEBALFINAL" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_E73F984C672CB801C99E9A1898A61BF8" FromRole="FromRole_assoc_E73F984C672CB801C99E9A1898A61BF8" ToRole="ToRole_assoc_E73F984C672CB801C99E9A1898A61BF8"/>
-                <NavigationProperty Name="Parameters" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_18BBC83DFE0682922F1FFA941C1DA56E" FromRole="ToRole_assoc_18BBC83DFE0682922F1FFA941C1DA56E" ToRole="FromRole_assoc_18BBC83DFE0682922F1FFA941C1DA56E" sap:filterable="false"/>
-            </EntityType>
-            <EntityType Name="ZOTC_C_CUSTOVPParameters" sap:semantics="parameters" sap:content-version="1">
-                <Key>
-                    <PropertyRef Name="P_CompanyCode"/>
-                    <PropertyRef Name="P_CustomerCode"/>
-                </Key>
-                <Property Name="P_CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:parameter="mandatory" sap:label="Company Code" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <Property Name="P_CustomerCode" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:parameter="mandatory" sap:label="Customer" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
-                <NavigationProperty Name="Set" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_18BBC83DFE0682922F1FFA941C1DA56E" FromRole="FromRole_assoc_18BBC83DFE0682922F1FFA941C1DA56E" ToRole="ToRole_assoc_18BBC83DFE0682922F1FFA941C1DA56E"/>
+                <NavigationProperty Name="to_C_CUSTCREDITINFO" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_746852DAF732B8B40E40EA6E5D26BAF9" FromRole="FromRole_assoc_746852DAF732B8B40E40EA6E5D26BAF9" ToRole="ToRole_assoc_746852DAF732B8B40E40EA6E5D26BAF9"/>
+                <NavigationProperty Name="to_C_CUSTMONTHBAL" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_A80FE063109FFD7A129B9CF744C1B4E9" FromRole="FromRole_assoc_A80FE063109FFD7A129B9CF744C1B4E9" ToRole="ToRole_assoc_A80FE063109FFD7A129B9CF744C1B4E9"/>
+                <NavigationProperty Name="to_C_CUSTOVRDUEBALFINAL" Relationship="cds_zotc_sd_ui_cust_ovp_o2.assoc_E4C3ADC3597E33C79B96C509090EE2C9" FromRole="FromRole_assoc_E4C3ADC3597E33C79B96C509090EE2C9" ToRole="ToRole_assoc_E4C3ADC3597E33C79B96C509090EE2C9"/>
             </EntityType>
             <EntityType Name="ZOTC_C_CUSTOVRDUEBALFINALType" sap:label="CDS view Customer Balance Information" sap:content-version="1">
                 <Key>
                     <PropertyRef Name="CompanyCode"/>
                     <PropertyRef Name="Customer"/>
+                    <PropertyRef Name="Sequence"/>
+                    <PropertyRef Name="PropertyName"/>
                 </Key>
-                <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code" sap:value-list="standard"/>
-                <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Customer"/>
-                <Property Name="PropertyName" Type="Edm.String" MaxLength="32" sap:display-format="UpperCase" sap:label="Charact.string (32)" sap:quickinfo="Character String - 32 User-Defined Characters"/>
+                <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:filter-restriction="single-value" sap:required-in-filter="true" sap:label="Company Code" sap:value-list="standard"/>
+                <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:filter-restriction="single-value" sap:required-in-filter="true" sap:label="Customer" sap:value-list="standard"/>
+                <Property Name="Sequence" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="UpperCase" sap:label="" sap:quickinfo="Component of the Version Number"/>
+                <Property Name="PropertyName" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase" sap:label="Field Name"/>
                 <Property Name="Amount" Type="Edm.Decimal" Precision="24" Scale="3" sap:unit="Currency"/>
                 <Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Company Code Crcy" sap:quickinfo="Company Code Currency" sap:semantics="currency-code"/>
             </EntityType>
-            <Association Name="assoc_56E748F8C31D7AC3145CC73E9581BEFE" sap:content-version="1">
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTCREDITINFOParameters" Multiplicity="1" Role="FromRole_assoc_56E748F8C31D7AC3145CC73E9581BEFE"/>
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTCREDITINFOType" Multiplicity="*" Role="ToRole_assoc_56E748F8C31D7AC3145CC73E9581BEFE"/>
+            <Association Name="assoc_A80FE063109FFD7A129B9CF744C1B4E9" sap:content-version="1">
+                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPType" Multiplicity="1" Role="FromRole_assoc_A80FE063109FFD7A129B9CF744C1B4E9"/>
+                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALType" Multiplicity="*" Role="ToRole_assoc_A80FE063109FFD7A129B9CF744C1B4E9"/>
             </Association>
-            <Association Name="assoc_18BBC83DFE0682922F1FFA941C1DA56E" sap:content-version="1">
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPParameters" Multiplicity="1" Role="FromRole_assoc_18BBC83DFE0682922F1FFA941C1DA56E"/>
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPType" Multiplicity="*" Role="ToRole_assoc_18BBC83DFE0682922F1FFA941C1DA56E"/>
+            <Association Name="assoc_E4C3ADC3597E33C79B96C509090EE2C9" sap:content-version="1">
+                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPType" Multiplicity="1" Role="FromRole_assoc_E4C3ADC3597E33C79B96C509090EE2C9"/>
+                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVRDUEBALFINALType" Multiplicity="*" Role="ToRole_assoc_E4C3ADC3597E33C79B96C509090EE2C9"/>
             </Association>
-            <Association Name="assoc_776F2C598107F76CAE32DFB2D9B6A39D" sap:content-version="1">
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPType" Multiplicity="1" Role="FromRole_assoc_776F2C598107F76CAE32DFB2D9B6A39D"/>
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTCREDITINFOType" Multiplicity="*" Role="ToRole_assoc_776F2C598107F76CAE32DFB2D9B6A39D"/>
-            </Association>
-            <Association Name="assoc_3E08EAF19A7D0C0B5A6038CCB402E984" sap:content-version="1">
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPType" Multiplicity="1" Role="FromRole_assoc_3E08EAF19A7D0C0B5A6038CCB402E984"/>
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALType" Multiplicity="*" Role="ToRole_assoc_3E08EAF19A7D0C0B5A6038CCB402E984"/>
-            </Association>
-            <Association Name="assoc_E73F984C672CB801C99E9A1898A61BF8" sap:content-version="1">
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPType" Multiplicity="1" Role="FromRole_assoc_E73F984C672CB801C99E9A1898A61BF8"/>
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVRDUEBALFINALType" Multiplicity="*" Role="ToRole_assoc_E73F984C672CB801C99E9A1898A61BF8"/>
-            </Association>
-            <Association Name="assoc_3C09B0EE4F9DEC8C375721E317AABDCA" sap:content-version="1">
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALParameters" Multiplicity="1" Role="FromRole_assoc_3C09B0EE4F9DEC8C375721E317AABDCA"/>
-                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALType" Multiplicity="*" Role="ToRole_assoc_3C09B0EE4F9DEC8C375721E317AABDCA"/>
+            <Association Name="assoc_746852DAF732B8B40E40EA6E5D26BAF9" sap:content-version="1">
+                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPType" Multiplicity="1" Role="FromRole_assoc_746852DAF732B8B40E40EA6E5D26BAF9"/>
+                <End Type="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTCREDITINFOType" Multiplicity="*" Role="ToRole_assoc_746852DAF732B8B40E40EA6E5D26BAF9"/>
             </Association>
             <EntityContainer Name="cds_zotc_sd_ui_cust_ovp_o2_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
                 <EntitySet Name="I_CompanyCodeStdVH" EntityType="cds_zotc_sd_ui_cust_ovp_o2.I_CompanyCodeStdVHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
-                <EntitySet Name="I_CreditControlAreaStdVH" EntityType="cds_zotc_sd_ui_cust_ovp_o2.I_CreditControlAreaStdVHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="I_CreditManagementSegment" EntityType="cds_zotc_sd_ui_cust_ovp_o2.I_CreditManagementSegmentType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
                 <EntitySet Name="I_Customer_VH" EntityType="cds_zotc_sd_ui_cust_ovp_o2.I_Customer_VHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
-                <EntitySet Name="ZOTC_C_CUSTCREDITINFOSet" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTCREDITINFOType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:addressable="false" sap:content-version="1"/>
-                <EntitySet Name="ZOTC_C_CUSTCREDITINFO" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTCREDITINFOParameters" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
-                <EntitySet Name="ZOTC_C_CUSTMONTHBALSet" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:addressable="false" sap:content-version="1"/>
-                <EntitySet Name="ZOTC_C_CUSTMONTHBAL" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALParameters" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
-                <EntitySet Name="ZOTC_C_CUSTOVPSet" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:addressable="false" sap:content-version="1"/>
-                <EntitySet Name="ZOTC_C_CUSTOVP" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPParameters" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
-                <EntitySet Name="ZOTC_C_CUSTOVRDUEBALFINAL" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVRDUEBALFINALType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
-                <AssociationSet Name="assoc_776F2C598107F76CAE32DFB2D9B6A39D" Association="cds_zotc_sd_ui_cust_ovp_o2.assoc_776F2C598107F76CAE32DFB2D9B6A39D" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZOTC_C_CUSTOVPSet" Role="FromRole_assoc_776F2C598107F76CAE32DFB2D9B6A39D"/>
-                    <End EntitySet="ZOTC_C_CUSTCREDITINFOSet" Role="ToRole_assoc_776F2C598107F76CAE32DFB2D9B6A39D"/>
+                <EntitySet Name="ZOTC_C_CUSTCREDITINFO" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTCREDITINFOType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="ZOTC_C_CUSTMONTHBAL" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="ZOTC_C_CUSTOVP" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVPType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:requires-filter="true" sap:content-version="1"/>
+                <EntitySet Name="ZOTC_C_CUSTOVRDUEBALFINAL" EntityType="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVRDUEBALFINALType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:requires-filter="true" sap:content-version="1"/>
+                <AssociationSet Name="assoc_A80FE063109FFD7A129B9CF744C1B4E9" Association="cds_zotc_sd_ui_cust_ovp_o2.assoc_A80FE063109FFD7A129B9CF744C1B4E9" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZOTC_C_CUSTOVP" Role="FromRole_assoc_A80FE063109FFD7A129B9CF744C1B4E9"/>
+                    <End EntitySet="ZOTC_C_CUSTMONTHBAL" Role="ToRole_assoc_A80FE063109FFD7A129B9CF744C1B4E9"/>
                 </AssociationSet>
-                <AssociationSet Name="assoc_3E08EAF19A7D0C0B5A6038CCB402E984" Association="cds_zotc_sd_ui_cust_ovp_o2.assoc_3E08EAF19A7D0C0B5A6038CCB402E984" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZOTC_C_CUSTOVPSet" Role="FromRole_assoc_3E08EAF19A7D0C0B5A6038CCB402E984"/>
-                    <End EntitySet="ZOTC_C_CUSTMONTHBALSet" Role="ToRole_assoc_3E08EAF19A7D0C0B5A6038CCB402E984"/>
+                <AssociationSet Name="assoc_E4C3ADC3597E33C79B96C509090EE2C9" Association="cds_zotc_sd_ui_cust_ovp_o2.assoc_E4C3ADC3597E33C79B96C509090EE2C9" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZOTC_C_CUSTOVP" Role="FromRole_assoc_E4C3ADC3597E33C79B96C509090EE2C9"/>
+                    <End EntitySet="ZOTC_C_CUSTOVRDUEBALFINAL" Role="ToRole_assoc_E4C3ADC3597E33C79B96C509090EE2C9"/>
                 </AssociationSet>
-                <AssociationSet Name="assoc_56E748F8C31D7AC3145CC73E9581BEFE" Association="cds_zotc_sd_ui_cust_ovp_o2.assoc_56E748F8C31D7AC3145CC73E9581BEFE" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZOTC_C_CUSTCREDITINFO" Role="FromRole_assoc_56E748F8C31D7AC3145CC73E9581BEFE"/>
-                    <End EntitySet="ZOTC_C_CUSTCREDITINFOSet" Role="ToRole_assoc_56E748F8C31D7AC3145CC73E9581BEFE"/>
-                </AssociationSet>
-                <AssociationSet Name="assoc_E73F984C672CB801C99E9A1898A61BF8" Association="cds_zotc_sd_ui_cust_ovp_o2.assoc_E73F984C672CB801C99E9A1898A61BF8" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZOTC_C_CUSTOVPSet" Role="FromRole_assoc_E73F984C672CB801C99E9A1898A61BF8"/>
-                    <End EntitySet="ZOTC_C_CUSTOVRDUEBALFINAL" Role="ToRole_assoc_E73F984C672CB801C99E9A1898A61BF8"/>
-                </AssociationSet>
-                <AssociationSet Name="assoc_3C09B0EE4F9DEC8C375721E317AABDCA" Association="cds_zotc_sd_ui_cust_ovp_o2.assoc_3C09B0EE4F9DEC8C375721E317AABDCA" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZOTC_C_CUSTMONTHBAL" Role="FromRole_assoc_3C09B0EE4F9DEC8C375721E317AABDCA"/>
-                    <End EntitySet="ZOTC_C_CUSTMONTHBALSet" Role="ToRole_assoc_3C09B0EE4F9DEC8C375721E317AABDCA"/>
-                </AssociationSet>
-                <AssociationSet Name="assoc_18BBC83DFE0682922F1FFA941C1DA56E" Association="cds_zotc_sd_ui_cust_ovp_o2.assoc_18BBC83DFE0682922F1FFA941C1DA56E" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZOTC_C_CUSTOVP" Role="FromRole_assoc_18BBC83DFE0682922F1FFA941C1DA56E"/>
-                    <End EntitySet="ZOTC_C_CUSTOVPSet" Role="ToRole_assoc_18BBC83DFE0682922F1FFA941C1DA56E"/>
+                <AssociationSet Name="assoc_746852DAF732B8B40E40EA6E5D26BAF9" Association="cds_zotc_sd_ui_cust_ovp_o2.assoc_746852DAF732B8B40E40EA6E5D26BAF9" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZOTC_C_CUSTOVP" Role="FromRole_assoc_746852DAF732B8B40E40EA6E5D26BAF9"/>
+                    <End EntitySet="ZOTC_C_CUSTCREDITINFO" Role="ToRole_assoc_746852DAF732B8B40E40EA6E5D26BAF9"/>
                 </AssociationSet>
             </EntityContainer>
             <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTCREDITINFOType/CompanyCode" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -275,21 +216,72 @@
                         </PropertyValue>
                     </Record>
                 </Annotation>
-            </Annotations>
-            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTCREDITINFOType/CreditControlArea" xmlns="http://docs.oasis-open.org/odata/ns/edm">
                 <Annotation Term="Common.ValueList">
                     <Record>
-                        <PropertyValue Property="Label" String="Credit Control Area"/>
-                        <PropertyValue Property="CollectionPath" String="I_CreditControlAreaStdVH"/>
+                        <PropertyValue Property="Label" String="Value Help for Customer"/>
+                        <PropertyValue Property="CollectionPath" String="I_Customer_VH"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Customer"/>
+                                    <PropertyValue Property="ValueListProperty" String="Customer"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName1"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName2"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Country"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CityName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="StreetName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CustomerName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CustomerAccountGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="IsBusinessPurposeCompleted"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTCREDITINFOType/CreditSegment" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Credit Management Segment"/>
+                        <PropertyValue Property="CollectionPath" String="I_CreditManagementSegment"/>
                         <PropertyValue Property="SearchSupported" Bool="false"/>
                         <PropertyValue Property="Parameters">
                             <Collection>
                                 <Record Type="Common.ValueListParameterInOut">
-                                    <PropertyValue Property="LocalDataProperty" PropertyPath="CreditControlArea"/>
-                                    <PropertyValue Property="ValueListProperty" String="CreditControlArea"/>
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="CreditSegment"/>
+                                    <PropertyValue Property="ValueListProperty" String="CreditSegment"/>
                                 </Record>
                                 <Record Type="Common.ValueListParameterDisplayOnly">
-                                    <PropertyValue Property="ValueListProperty" String="CreditControlArea_Text"/>
+                                    <PropertyValue Property="ValueListProperty" String="CreditSegment_Text"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CreditSegmentCurrency"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CrdtSgmtIsMainCreditSegment"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CrdtSgmtIsAddedToMainSgmt"/>
                                 </Record>
                             </Collection>
                         </PropertyValue>
@@ -310,6 +302,50 @@
                                 </Record>
                                 <Record Type="Common.ValueListParameterDisplayOnly">
                                     <PropertyValue Property="ValueListProperty" String="CompanyCodeName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALType/Customer" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Value Help for Customer"/>
+                        <PropertyValue Property="CollectionPath" String="I_Customer_VH"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Customer"/>
+                                    <PropertyValue Property="ValueListProperty" String="Customer"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName1"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName2"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Country"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CityName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="StreetName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CustomerName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CustomerAccountGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="IsBusinessPurposeCompleted"/>
                                 </Record>
                             </Collection>
                         </PropertyValue>
@@ -379,6 +415,49 @@
                         </PropertyValue>
                     </Record>
                 </Annotation>
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Value Help for Customer"/>
+                        <PropertyValue Property="CollectionPath" String="I_Customer_VH"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Customer"/>
+                                    <PropertyValue Property="ValueListProperty" String="Customer"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName1"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName2"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Country"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CityName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="StreetName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CustomerName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CustomerAccountGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="IsBusinessPurposeCompleted"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.SemanticObject" String="Customer"/>
             </Annotations>
             <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVRDUEBALFINALType/CompanyCode" xmlns="http://docs.oasis-open.org/odata/ns/edm">
                 <Annotation Term="Common.ValueList">
@@ -400,6 +479,50 @@
                     </Record>
                 </Annotation>
             </Annotations>
+            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVRDUEBALFINALType/Customer" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Value Help for Customer"/>
+                        <PropertyValue Property="CollectionPath" String="I_Customer_VH"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Customer"/>
+                                    <PropertyValue Property="ValueListProperty" String="Customer"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName1"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName2"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Country"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CityName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="StreetName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CustomerName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CustomerAccountGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="IsBusinessPurposeCompleted"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
             <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.cds_zotc_sd_ui_cust_ovp_o2_Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm">
                 <Annotation Term="Aggregation.ApplySupported">
                     <Record>
@@ -414,117 +537,51 @@
                     </Record>
                 </Annotation>
             </Annotations>
-            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.cds_zotc_sd_ui_cust_ovp_o2_Entities/ZOTC_C_CUSTCREDITINFO" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-                <Annotation Term="Capabilities.FilterRestrictions">
-                    <Record>
-                        <PropertyValue Property="NonFilterableProperties">
-                            <Collection>
-                                <PropertyPath>P_CompanyCode</PropertyPath>
-                                <PropertyPath>P_CustomerCode</PropertyPath>
-                            </Collection>
-                        </PropertyValue>
-                    </Record>
-                </Annotation>
-                <Annotation Term="Capabilities.NavigationRestrictions">
-                    <Record>
-                        <PropertyValue Property="RestrictedProperties">
-                            <Collection>
-                                <Record>
-                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="Parameters"/>
-                                    <PropertyValue Property="FilterRestrictions">
-                                        <Record>
-                                            <PropertyValue Property="Filterable" Bool="false"/>
-                                        </Record>
-                                    </PropertyValue>
-                                </Record>
-                            </Collection>
-                        </PropertyValue>
-                    </Record>
-                </Annotation>
-                <Annotation Term="Capabilities.SortRestrictions">
-                    <Record>
-                        <PropertyValue Property="NonSortableProperties">
-                            <Collection>
-                                <PropertyPath>P_CompanyCode</PropertyPath>
-                                <PropertyPath>P_CustomerCode</PropertyPath>
-                            </Collection>
-                        </PropertyValue>
-                    </Record>
-                </Annotation>
-            </Annotations>
-            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.cds_zotc_sd_ui_cust_ovp_o2_Entities/ZOTC_C_CUSTMONTHBAL" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-                <Annotation Term="Capabilities.FilterRestrictions">
-                    <Record>
-                        <PropertyValue Property="NonFilterableProperties">
-                            <Collection>
-                                <PropertyPath>P_CompanyCode</PropertyPath>
-                                <PropertyPath>P_CustomerCode</PropertyPath>
-                                <PropertyPath>P_ExecutionDate</PropertyPath>
-                            </Collection>
-                        </PropertyValue>
-                    </Record>
-                </Annotation>
-                <Annotation Term="Capabilities.NavigationRestrictions">
-                    <Record>
-                        <PropertyValue Property="RestrictedProperties">
-                            <Collection>
-                                <Record>
-                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="Parameters"/>
-                                    <PropertyValue Property="FilterRestrictions">
-                                        <Record>
-                                            <PropertyValue Property="Filterable" Bool="false"/>
-                                        </Record>
-                                    </PropertyValue>
-                                </Record>
-                            </Collection>
-                        </PropertyValue>
-                    </Record>
-                </Annotation>
-                <Annotation Term="Capabilities.SortRestrictions">
-                    <Record>
-                        <PropertyValue Property="NonSortableProperties">
-                            <Collection>
-                                <PropertyPath>P_CompanyCode</PropertyPath>
-                                <PropertyPath>P_CustomerCode</PropertyPath>
-                                <PropertyPath>P_ExecutionDate</PropertyPath>
-                            </Collection>
-                        </PropertyValue>
-                    </Record>
-                </Annotation>
-            </Annotations>
             <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.cds_zotc_sd_ui_cust_ovp_o2_Entities/ZOTC_C_CUSTOVP" xmlns="http://docs.oasis-open.org/odata/ns/edm">
                 <Annotation Term="Capabilities.FilterRestrictions">
                     <Record>
-                        <PropertyValue Property="NonFilterableProperties">
+                        <PropertyValue Property="RequiresFilter" Bool="true"/>
+                        <PropertyValue Property="RequiredProperties">
                             <Collection>
-                                <PropertyPath>P_CompanyCode</PropertyPath>
-                                <PropertyPath>P_CustomerCode</PropertyPath>
+                                <PropertyPath>CompanyCode</PropertyPath>
+                                <PropertyPath>Customer</PropertyPath>
                             </Collection>
                         </PropertyValue>
-                    </Record>
-                </Annotation>
-                <Annotation Term="Capabilities.NavigationRestrictions">
-                    <Record>
-                        <PropertyValue Property="RestrictedProperties">
+                        <PropertyValue Property="FilterExpressionRestrictions">
                             <Collection>
                                 <Record>
-                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="Parameters"/>
-                                    <PropertyValue Property="FilterRestrictions">
-                                        <Record>
-                                            <PropertyValue Property="Filterable" Bool="false"/>
-                                        </Record>
-                                    </PropertyValue>
+                                    <PropertyValue Property="Property" PropertyPath="CompanyCode"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleValue"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="Customer"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleValue"/>
                                 </Record>
                             </Collection>
                         </PropertyValue>
                     </Record>
                 </Annotation>
-                <Annotation Term="Capabilities.SortRestrictions">
+            </Annotations>
+            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.cds_zotc_sd_ui_cust_ovp_o2_Entities/ZOTC_C_CUSTOVRDUEBALFINAL" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Capabilities.FilterRestrictions">
                     <Record>
-                        <PropertyValue Property="NonSortableProperties">
+                        <PropertyValue Property="RequiresFilter" Bool="true"/>
+                        <PropertyValue Property="RequiredProperties">
                             <Collection>
-                                <PropertyPath>P_CompanyCode</PropertyPath>
-                                <PropertyPath>P_CustomerCode</PropertyPath>
+                                <PropertyPath>CompanyCode</PropertyPath>
+                                <PropertyPath>Customer</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="FilterExpressionRestrictions">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="CompanyCode"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleValue"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="Customer"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleValue"/>
+                                </Record>
                             </Collection>
                         </PropertyValue>
                     </Record>
@@ -535,7 +592,6 @@
                     <Record>
                         <PropertyValue Property="n">
                             <Record>
-                                <PropertyValue Property="given" Path="Name1"/>
                                 <PropertyValue Property="given" Path="Name2"/>
                             </Record>
                         </PropertyValue>
@@ -557,6 +613,15 @@
                         <PropertyValue Property="pobox" Path="PostalCode"/>
                     </Record>
                 </Annotation>
+            </Annotations>
+            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALType/Aged_Balance" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticObject" String="ZcustMBalDet"/>
+            </Annotations>
+            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALType/Turnover_Balance" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticObject" String="ZcustMBalDetT"/>
+            </Annotations>
+            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVRDUEBALFINALType/Amount" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticObject" String="ZCustBalDet"/>
             </Annotations>
             <atom:link rel="self" href="https://s4dbasdev130:443/sap/opu/odata/sap/ZOTC_SB_UI_CUST_OVP_O2/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
             <atom:link rel="latest-version" href="https://s4dbasdev130:443/sap/opu/odata/sap/ZOTC_SB_UI_CUST_OVP_O2/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>

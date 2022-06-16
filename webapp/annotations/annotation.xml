@@ -28,7 +28,7 @@
                         </PropertyValue>
                     </Record>
                 </Annotation> -->
-                <Annotation Term="UI.LineItem" Qualifier="CustomerMonthBalance">
+                <!-- <Annotation Term="UI.LineItem" Qualifier="CustomerMonthBalance">
                     <Collection>
                         <Record Type="UI.DataField">
                             <PropertyValue Property="Value" Path="to_C_CUSTMONTHBAL/CalendarMonthShortName" />
@@ -40,7 +40,7 @@
                             <PropertyValue Property="Value" Path="to_C_CUSTMONTHBAL/Turnover_Balance" />
                         </Record>
                     </Collection>
-                </Annotation>
+                </Annotation> -->
                 <Annotation Term="UI.SelectionVariant" Qualifier="CustomerMonthBalanceSelection">
                     <Record>
                         <PropertyValue Property="Parameters">
@@ -52,6 +52,40 @@
                             </Collection>
                         </PropertyValue>
                     </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVRDUEBALFINALType">
+                <Annotation Term="UI.LineItem" Qualifier="BalanceInfo">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PropertyName" />
+                            <PropertyValue Property="Label" String=" " />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Amount" />
+                            <PropertyValue Property="Label" String="{@i18n>amount}" />
+                            <PropertyValue Property="Criticality" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <!-- <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTOVRDUEBALFINALType/Amount">
+            </Annotations> -->
+            <Annotations Target="cds_zotc_sd_ui_cust_ovp_o2.ZOTC_C_CUSTMONTHBALType">
+                <Annotation Term="UI.LineItem" Qualifier="MonthBal">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="CalendarMonthShortName" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Aged_Balance" />
+                            <PropertyValue Property="Label" String="{@i18n>agedBalance}" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Turnover_Balance" />
+                            <PropertyValue Property="Label" String="{@i18n>turnoverBalance}" />
+                        </Record>
+                    </Collection>
                 </Annotation>
             </Annotations>
         </Schema>
